@@ -1,0 +1,20 @@
+[gd_scene load_steps=4 format=3 uid="uid://cgrfi6pj4ua6a"]
+
+[ext_resource type="Texture2D" uid="uid://d3ylrtwhyrlk4" path="res://art/All cards.png" id="1_g8mfb"]
+[ext_resource type="Script" path="res://objects/flipped_card.gd" id="2_kb5hn"]
+[ext_resource type="AudioStream" uid="uid://byrb1noylo5ht" path="res://art/Audio/card-shove-1_new.wav" id="3_syubs"]
+
+[node name="FlippedCard" type="Sprite2D"]
+texture = ExtResource("1_g8mfb")
+hframes = 7
+vframes = 9
+frame = 57
+script = ExtResource("2_kb5hn")
+
+[node name="SlideSFX" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("3_syubs")
+volume_db = -5.0
+
+[node name="ShuffleSFX" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("3_syubs")
+volume_db = -5.0

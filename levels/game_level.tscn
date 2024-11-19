@@ -1,0 +1,42 @@
+[gd_scene load_steps=4 format=3 uid="uid://chjuvk84o5h0c"]
+
+[ext_resource type="PackedScene" uid="uid://b8afhoh124qk1" path="res://objects/deck.tscn" id="2_tlhdu"]
+[ext_resource type="PackedScene" uid="uid://bwgojbji83w6t" path="res://objects/hawk_eye.tscn" id="3_gy5mt"]
+[ext_resource type="FontFile" uid="uid://bnt2dlo1wam78" path="res://art/Quit 13.ttf" id="4_q1hkt"]
+
+[node name="gameLevel" type="Node2D"]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+
+[node name="Deck" parent="." instance=ExtResource("2_tlhdu")]
+rotation = -0.0213732
+scale = Vector2(2.2, 2.2)
+
+[node name="hawk_eye" parent="." instance=ExtResource("3_gy5mt")]
+visible = false
+position = Vector2(-280, -40)
+scale = Vector2(4, 4)
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="CanvasLayer" type="CanvasLayer" parent="Control"]
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Control/CanvasLayer"]
+visible = false
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 152.0
+offset_top = -116.0
+offset_right = 450.0
+offset_bottom = -76.0
+grow_vertical = 2
+theme_override_fonts/normal_font = ExtResource("4_q1hkt")
+bbcode_enabled = true
+text = "[center]The Hawk is calculating..."
+fit_content = true
+autowrap_mode = 0
