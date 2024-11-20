@@ -13,6 +13,10 @@ var deck_y_offset = -190.0
 func _ready():
 	
 	ShuffleAnimationStart()
+	
+func _process(_delta):
+	if(Input.is_action_just_pressed("DEBUG")):
+		CardDrawAnimationStart()
 
 # Riffle animation
 func ShuffleAnimationStart():
@@ -91,7 +95,7 @@ func ShuffleAnimationEnd():
 	var shuffle_tween = get_tree().create_tween().set_ease(Tween.EASE_IN).set_parallel(true)
 	
 	for i in card_array.size():
-		card_array[i].z_index = -i
+		card_array[i].z_index = i # Card 0 would be at the bottom of the deck
 		shuffle_tween.tween_property(card_array[i], "rotation_degrees", 0.0, card_split_time*2)
 		shuffle_tween.tween_property(card_array[i], "position", Vector2(0, position.y + deck_y_offset + (0.2 * i)), card_split_time*2)
 		
@@ -99,4 +103,35 @@ func ShuffleAnimationEnd():
 			card_array[i].PlaySoundEffect(1)
 	
 	shuffle_tween.play()
+	
+func CardDrawAnimationStart():
+	
+	if card_array.is_empty():
+		return
+	
+	var card_draw_index = card_array.size() - 1
+	var card_to_draw = card_array.pop_back()
+	
+	var pull_tween = get_tree().create_tween().set_ease(Tween.EASE_IN)
+	pull_tween.tween_property(card_to_draw, "position", Vector2(0, -0.2 * card_draw_index), card_split_time)
+	pull_tween.play()
+	
+	pull_tween.tween_callback(Callable(self, "CardDrawAnimationEnd").bind(card_to_draw))
+	
+	var flip_tween = get_tree().create_tween().set_ease(Tween.EASE_IN)
+	flip_tween.tween_property(card_to_draw, "scale", Vector2(scale.x, 0), card_split_time / 2)
+	flip_tween.play()
+	flip_tween.tween_callback(Callable(self, "CardFlipAnimation").bind(card_to_draw))
+	
+	card_to_draw.PlaySoundEffect(0)
+	
+func CardDrawAnimationEnd(card_to_draw):
+	card_to_draw.z_index = -card_to_draw.z_index
+
+func CardFlipAnimation(card_to_draw):
+	var flip_tween = get_tree().create_tween().set_ease(Tween.EASE_IN)
+	flip_tween.tween_property(card_to_draw, "scale", Vector2(scale.x, scale.y), card_split_time / 2)
+	flip_tween.play()
+	
+	card_to_draw.frame = randi_range(0, 55)
 	

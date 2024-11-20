@@ -9,6 +9,7 @@ texture = ExtResource("1_g8mfb")
 hframes = 7
 vframes = 9
 frame = 57
+region_rect = Rect2(0, 0, 336, 576)
 script = ExtResource("2_kb5hn")
 
 [node name="SlideSFX" type="AudioStreamPlayer2D" parent="."]
