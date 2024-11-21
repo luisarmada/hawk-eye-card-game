@@ -1,23 +1,14 @@
 [gd_scene load_steps=6 format=3 uid="uid://chjuvk84o5h0c"]
 
-[ext_resource type="PackedScene" uid="uid://b8afhoh124qk1" path="res://objects/deck.tscn" id="2_tlhdu"]
-[ext_resource type="PackedScene" uid="uid://bwgojbji83w6t" path="res://objects/hawk_eye.tscn" id="3_gy5mt"]
+[ext_resource type="Script" path="res://levels/game_ui.gd" id="3_m60ws"]
 [ext_resource type="AudioStream" uid="uid://dvijm8omhislv" path="res://art/Audio/Casino Jazz by Pink Banana [Noir Jazz No Copyright Music].wav" id="4_6upfq"]
 [ext_resource type="FontFile" uid="uid://bnt2dlo1wam78" path="res://art/Quit 13.ttf" id="4_q1hkt"]
-[ext_resource type="Texture2D" uid="uid://o0jk18jiswlr" path="res://art/button.png" id="4_xkg5p"]
+[ext_resource type="PackedScene" uid="uid://bncb1xhl5f71v" path="res://objects/chips.tscn" id="6_c0wgf"]
+[ext_resource type="Texture2D" uid="uid://dphi8i1qqiigd" path="res://art/pxArt.png" id="8_1cs4a"]
 
 [node name="gameLevel" type="Node2D"]
 
 [node name="Camera2D" type="Camera2D" parent="."]
-
-[node name="Deck" parent="." instance=ExtResource("2_tlhdu")]
-rotation = -0.0213732
-scale = Vector2(2.2, 2.2)
-
-[node name="hawk_eye" parent="." instance=ExtResource("3_gy5mt")]
-visible = false
-position = Vector2(-280, -40)
-scale = Vector2(4, 4)
 
 [node name="Control" type="Control" parent="."]
 layout_mode = 3
@@ -26,62 +17,86 @@ offset_right = 40.0
 offset_bottom = 40.0
 
 [node name="CanvasLayer" type="CanvasLayer" parent="Control"]
+script = ExtResource("3_m60ws")
 
-[node name="RichTextLabel" type="RichTextLabel" parent="Control/CanvasLayer"]
-visible = false
-anchors_preset = 4
-anchor_top = 0.5
-anchor_bottom = 0.5
-offset_left = 152.0
-offset_top = -116.0
-offset_right = 450.0
-offset_bottom = -76.0
-grow_vertical = 2
+[node name="PlayerText" type="RichTextLabel" parent="Control/CanvasLayer"]
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 24.0
+offset_top = -64.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+theme_override_colors/default_color = Color(1, 1, 1, 1)
 theme_override_fonts/normal_font = ExtResource("4_q1hkt")
 bbcode_enabled = true
-text = "[center]The Hawk is calculating..."
-fit_content = true
+text = "Bet: £100 [color=\"#228B22\"](+£10)
+[color=white]Balance: £1500
+"
 autowrap_mode = 0
 
-[node name="TextureRect" type="TextureRect" parent="Control/CanvasLayer"]
-offset_left = 736.0
-offset_top = 256.0
-offset_right = 912.0
-offset_bottom = 312.0
-texture = ExtResource("4_xkg5p")
-stretch_mode = 5
-
-[node name="RichTextLabel" type="RichTextLabel" parent="Control/CanvasLayer/TextureRect"]
-layout_mode = 0
-offset_top = 16.0
-offset_right = 176.0
-offset_bottom = 48.0
+[node name="HawkText" type="RichTextLabel" parent="Control/CanvasLayer"]
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 24.0
+offset_top = -64.0
+offset_right = -24.0
+grow_horizontal = 2
+grow_vertical = 0
 mouse_filter = 2
-theme_override_colors/default_color = Color(0, 0, 0, 1)
+theme_override_colors/default_color = Color(1, 1, 1, 1)
 theme_override_fonts/normal_font = ExtResource("4_q1hkt")
 bbcode_enabled = true
-text = "[center]Higher"
+text = "[right]The hawk favours:
+ [color=\"#FF6600\"]HIGHER[color=white] by[color=\"#FF6600\"] 30%
+"
+autowrap_mode = 0
 
-[node name="TextureRect2" type="TextureRect" parent="Control/CanvasLayer"]
-offset_left = 736.0
-offset_top = 328.0
-offset_right = 912.0
-offset_bottom = 384.0
-texture = ExtResource("4_xkg5p")
-stretch_mode = 5
-
-[node name="RichTextLabel" type="RichTextLabel" parent="Control/CanvasLayer/TextureRect2"]
-layout_mode = 0
-offset_top = 16.0
-offset_right = 176.0
-offset_bottom = 48.0
+[node name="ActionText" type="RichTextLabel" parent="Control/CanvasLayer"]
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = -232.0
+offset_right = -8.0
+grow_horizontal = 2
+grow_vertical = 0
 mouse_filter = 2
-theme_override_colors/default_color = Color(0, 0, 0, 1)
+theme_override_colors/default_color = Color(1, 1, 1, 1)
 theme_override_fonts/normal_font = ExtResource("4_q1hkt")
 bbcode_enabled = true
-text = "[center]Lower"
+text = "[center] Shuffling...
+
+Press Q for LOWER
+Press E for HIGHER"
+autowrap_mode = 0
 
 [node name="BGMusic" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("4_6upfq")
-volume_db = -7.5
+volume_db = -7.0
 autoplay = true
+
+[node name="Chips" parent="." instance=ExtResource("6_c0wgf")]
+position = Vector2(-526.4, 220.8)
+
+[node name="Chips2" parent="." instance=ExtResource("6_c0wgf")]
+position = Vector2(-470.4, 220.8)
+
+[node name="Chips3" parent="." instance=ExtResource("6_c0wgf")]
+position = Vector2(-414.4, 220.8)
+
+[node name="Chips4" parent="." instance=ExtResource("6_c0wgf")]
+position = Vector2(-358.4, 220.8)
+
+[node name="Chips5" parent="." instance=ExtResource("6_c0wgf")]
+position = Vector2(-302.4, 220.8)
+
+[node name="PxArt" type="Sprite2D" parent="."]
+position = Vector2(448, 224)
+scale = Vector2(0.04, 0.04)
+texture = ExtResource("8_1cs4a")

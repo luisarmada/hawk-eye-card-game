@@ -1,0 +1,24 @@
+[gd_scene load_steps=3 format=3 uid="uid://b10vnkbfc8ewa"]
+
+[ext_resource type="Texture2D" uid="uid://boybmmmtcayrp" path="res://art/Full Sprite Sheet.png" id="1_fijn1"]
+[ext_resource type="FontFile" uid="uid://bnt2dlo1wam78" path="res://art/Quit 13.ttf" id="2_06knt"]
+
+[node name="Button" type="Sprite2D"]
+position = Vector2(16, -16)
+scale = Vector2(3, 3)
+texture = ExtResource("1_fijn1")
+hframes = 6
+vframes = 4
+frame = 19
+
+[node name="RichTextLabel" type="RichTextLabel" parent="."]
+offset_left = -30.0
+offset_top = 2.0
+offset_right = 90.0
+offset_bottom = 42.0
+scale = Vector2(0.4, 0.4)
+theme_override_colors/default_color = Color(0.172833, 0.172833, 0.172833, 1)
+theme_override_fonts/normal_font = ExtResource("2_06knt")
+bbcode_enabled = true
+text = "[center]Higher"
+autowrap_mode = 0

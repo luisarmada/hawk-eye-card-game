@@ -2,8 +2,14 @@ extends Node2D
 
 var flipped_card_obj = preload("res://objects/flipped_card.tscn")
 
+# SIGNALS
+signal ShuffleAnimationBegin()
+signal ShuffleAnimationFinish()
+signal CardDrawn()
+
+var cards_in_play: int = 0
 var num_of_cards: int = 52
-var split_distance: float = 130.0
+var split_distance: float = 120.0
 var card_split_time: float = 0.4
 var card_throw_speed: float = 0.09
 var card_array = []
@@ -11,12 +17,8 @@ var card_array = []
 var deck_y_offset = -190.0
 
 func _ready():
-	
+	scale = Vector2(2.2, 2.2)
 	ShuffleAnimationStart()
-	
-func _process(_delta):
-	if(Input.is_action_just_pressed("DEBUG")):
-		CardDrawAnimationStart()
 
 # Riffle animation
 func ShuffleAnimationStart():
@@ -36,7 +38,6 @@ func ShuffleAnimationStart():
 	
 	await get_tree().create_timer(0.7).timeout
 	# Animate the two cards splitting to represent the whole deck being split
-	
 
 	var card_split_tween = get_tree().create_tween().set_ease(Tween.EASE_IN)
 	card_split_tween.tween_property(fc_inst_left, "position", Vector2(-split_distance, position.y), card_split_time)
@@ -49,6 +50,9 @@ func ShuffleAnimationStart():
 	fc_inst_right.PlaySoundEffect(0)
 	
 	card_split_tween.tween_callback(Callable(self, "ShuffleAnimationRecurse").bind(num_of_cards)).set_delay(0.25)
+	
+	Deck.ShuffleAnimationBegin.emit()
+	cards_in_play = 0
 	
 # Card mixing animation
 func ShuffleAnimationRecurse(card_counter):
@@ -103,8 +107,12 @@ func ShuffleAnimationEnd():
 			card_array[i].PlaySoundEffect(1)
 	
 	shuffle_tween.play()
+	Deck.ShuffleAnimationFinish.emit()
 	
-func CardDrawAnimationStart():
+	await get_tree().create_timer(card_split_time * 4).timeout
+	DrawNextCard()
+	
+func DrawNextCard():
 	
 	if card_array.is_empty():
 		return
@@ -134,4 +142,9 @@ func CardFlipAnimation(card_to_draw):
 	flip_tween.play()
 	
 	card_to_draw.frame = randi_range(0, 55)
+	
+	await get_tree().create_timer(card_split_time).timeout
+	
+	cards_in_play += 1
+	Deck.CardDrawn.emit()
 	
