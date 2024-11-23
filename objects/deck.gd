@@ -18,11 +18,9 @@ var deck_y_offset = -190.0
 
 func _ready():
 	scale = Vector2(2.2, 2.2)
-	ShuffleAnimationStart()
+	InitialCardSetup()
 
-# Riffle animation
-func ShuffleAnimationStart():
-	
+func InitialCardSetup():
 	# Instantiate flipped card objects for left and right halves
 	var fc_inst_left = flipped_card_obj.instantiate()
 	get_tree().get_root().call_deferred("add_child", fc_inst_left)
@@ -35,9 +33,21 @@ func ShuffleAnimationStart():
 	fc_inst_right.position = position
 	fc_inst_right.scale = scale
 	card_array.append(fc_inst_right)
+
+func ResetCardsToInitial():
+	for i in card_array:
+		i.queue_free()
 	
+	card_array = []
+	InitialCardSetup()
+
+# Riffle animation
+func ShuffleAnimationStart():
 	await get_tree().create_timer(0.7).timeout
 	# Animate the two cards splitting to represent the whole deck being split
+	var fc_inst_left = card_array[0]
+	var fc_inst_right = card_array[1]
+
 
 	var card_split_tween = get_tree().create_tween().set_ease(Tween.EASE_IN)
 	card_split_tween.tween_property(fc_inst_left, "position", Vector2(-split_distance, position.y), card_split_time)
@@ -117,8 +127,9 @@ func DrawNextCard():
 	if card_array.is_empty():
 		return
 	
-	var card_draw_index = card_array.size() - 1
-	var card_to_draw = card_array.pop_back()
+	var card_draw_index = card_array.size() - cards_in_play - 1
+	cards_in_play += 1
+	var card_to_draw = card_array[card_draw_index]
 	
 	var pull_tween = get_tree().create_tween().set_ease(Tween.EASE_IN)
 	pull_tween.tween_property(card_to_draw, "position", Vector2(0, -0.2 * card_draw_index), card_split_time)
@@ -145,6 +156,5 @@ func CardFlipAnimation(card_to_draw):
 	
 	await get_tree().create_timer(card_split_time).timeout
 	
-	cards_in_play += 1
 	Deck.CardDrawn.emit()
 	

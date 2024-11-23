@@ -1,9 +1,11 @@
-[gd_scene load_steps=5 format=3 uid="uid://chjuvk84o5h0c"]
+[gd_scene load_steps=7 format=3 uid="uid://chjuvk84o5h0c"]
 
 [ext_resource type="Script" path="res://levels/game_ui.gd" id="3_m60ws"]
 [ext_resource type="AudioStream" uid="uid://dvijm8omhislv" path="res://art/Audio/Casino Jazz by Pink Banana [Noir Jazz No Copyright Music].wav" id="4_6upfq"]
 [ext_resource type="FontFile" uid="uid://bnt2dlo1wam78" path="res://art/Quit 13.ttf" id="4_q1hkt"]
 [ext_resource type="AudioStream" uid="uid://dgq52w4kt8ur2" path="res://art/Audio/004_Hover_04.wav" id="4_vtklg"]
+[ext_resource type="PackedScene" uid="uid://bncb1xhl5f71v" path="res://objects/chips.tscn" id="6_c0wgf"]
+[ext_resource type="Texture2D" uid="uid://dphi8i1qqiigd" path="res://art/pxArt.png" id="8_1cs4a"]
 
 [node name="gameLevel" type="Node2D"]
 
@@ -40,6 +42,25 @@ Bet: £0 [color=\"#228B22\"]
 scroll_active = false
 autowrap_mode = 0
 
+[node name="HawkText" type="RichTextLabel" parent="Control/CanvasLayer"]
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 24.0
+offset_top = -64.0
+offset_right = -24.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+theme_override_colors/default_color = Color(1, 1, 1, 1)
+theme_override_fonts/normal_font = ExtResource("4_q1hkt")
+bbcode_enabled = true
+text = "[right]The hawk favours:
+ [color=\"#FF6600\"]HIGHER[color=white] by[color=\"#FF6600\"] 30%
+"
+autowrap_mode = 0
+
 [node name="ActionText" type="RichTextLabel" parent="Control/CanvasLayer"]
 anchors_preset = 12
 anchor_top = 1.0
@@ -60,6 +81,15 @@ Press Q for LOWER
 Press E for HIGHER"
 autowrap_mode = 0
 
+[node name="HawkArt" type="TextureRect" parent="Control/CanvasLayer"]
+visible = false
+offset_left = 904.0
+offset_top = 528.0
+offset_right = 6596.0
+offset_bottom = 1595.0
+scale = Vector2(0.04, 0.04)
+texture = ExtResource("8_1cs4a")
+
 [node name="UISFX" type="AudioStreamPlayer2D" parent="Control/CanvasLayer"]
 stream = ExtResource("4_vtklg")
 volume_db = 8.0
@@ -68,3 +98,23 @@ volume_db = 8.0
 stream = ExtResource("4_6upfq")
 volume_db = -7.0
 autoplay = true
+
+[node name="Chips" parent="." instance=ExtResource("6_c0wgf")]
+visible = false
+position = Vector2(-526.4, 220.8)
+
+[node name="Chips2" parent="." instance=ExtResource("6_c0wgf")]
+visible = false
+position = Vector2(-470.4, 220.8)
+
+[node name="Chips3" parent="." instance=ExtResource("6_c0wgf")]
+visible = false
+position = Vector2(-414.4, 220.8)
+
+[node name="Chips4" parent="." instance=ExtResource("6_c0wgf")]
+visible = false
+position = Vector2(-358.4, 220.8)
+
+[node name="Chips5" parent="." instance=ExtResource("6_c0wgf")]
+visible = false
+position = Vector2(-302.4, 220.8)
