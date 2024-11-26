@@ -8,6 +8,7 @@ GDScript features dynamic typing, indent-based structure, and is lightweight and
 1. Open this link in browser: https://luera.itch.io/hawks-card-gambit
 2. Press 'Run game' (This might open in a pop-up window, make sure to click on the window to get focus)
 3. Enjoy! (There are sounds effects, so make sure audio is on!)
+  - You can zoom in on the web-page to make the game bigger if necessary.
 
 ## How To Play
 - The game should open and ask the user to input a bet. Use the number keys to input a bet (can also contain decimals).
