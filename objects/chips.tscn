@@ -1,9 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://bncb1xhl5f71v"]
-
-[ext_resource type="Texture2D" uid="uid://baqhkleo4fr56" path="res://art/Chips/ChipsA_Flat-64x72.png" id="1_f7vkl"]
-
-[node name="Chips" type="Sprite2D"]
-scale = Vector2(0.8, 0.8)
-texture = ExtResource("1_f7vkl")
-hframes = 5
-vframes = 2

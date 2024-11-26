@@ -1,7 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://bwgojbji83w6t"]
-
-[ext_resource type="Texture2D" uid="uid://dpslx28nl3xi1" path="res://art/hawk_eye.webp" id="1_mjl3m"]
-
-[node name="hawk_eye" type="Sprite2D"]
-texture = ExtResource("1_mjl3m")
-hframes = 7

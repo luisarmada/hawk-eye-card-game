@@ -1,32 +1,35 @@
 extends Node2D
 
+# This script manages the deck itself, handing out cards and the hawk logic
+
+# Reference to flipped card object, used to create instances
 var flipped_card_obj = preload("res://objects/flipped_card.tscn")
 
-# SIGNALS
+# SIGNALS - used to interface with other classes
 signal ShuffleAnimationBegin()
 signal ShuffleAnimationFinish()
 signal CardDrawn()
 
-var shuffled_card_indices = []
-
+# Initialisation variables
 var cards_in_play: int = 0
 var num_of_cards: int = 52
-var jokers_in_play: bool = false
-var split_distance: float = 120.0
-var card_split_time: float = 0.4
-var card_throw_speed: float = 0.09
-
+var jokers_in_play: bool = false 
+var split_distance: float = 120.0 # Distance between cards on riffle split
+var card_split_time: float = 0.4 # Decides shuffling animation lengths
+var card_throw_speed: float = 0.09 # How fast the cards are shuffled during riffle
 var card_array = [] # contains ALL card instances
  
-var deck_y_offset = -190.0
+var deck_y_offset = -190.0 # y-offset of the deck from the middle of screen
 
+# Game variables
+var shuffled_card_indices = [] # Contains a shuffled array of card values
 var current_card_index = 0
 var current_card_name = ""
 var current_card_value = -1
 var prev_card_value = -1
-var bet_higher: bool = false
-var correct_bet: bool = true
-var hawk_assumes_higher: bool = false
+var bet_higher: bool = false # True if the player bet higher
+var correct_bet: bool = true # True if the player chose higher or lower correctly
+var hawk_assumes_higher: bool = false # True if hawk favours higher
 
 func _ready():
 	scale = Vector2(2.2, 2.2)
@@ -46,21 +49,23 @@ func InitialCardSetup():
 	fc_inst_right.scale = scale
 	card_array.append(fc_inst_right)
 	
+	# Initialise shuffled card deck
 	for i in 56: # iterate through cards
-		if i == 27 or i == 13: # Skip extra jokers
+		if i == 27 or i == 13: # Skip extra jokers (there are 4 in art, so skip 2)
 			continue
-		shuffled_card_indices.append(i)
+		shuffled_card_indices.append(i) 
 
+# Fisher Yates shuffle works by iterating through an array and swapping elements at random from the unprocessed subarray
 func FisherYatesShuffle():
 	for i in range(shuffled_card_indices.size() - 1, 0, -1):
-		var j = randi() % (i + 1)
+		var j = randi() % (i + 1) # Random index
 		
 		# Swap cards
 		var temp = shuffled_card_indices[i]
 		shuffled_card_indices[i] = shuffled_card_indices[j]
 		shuffled_card_indices[j] = temp
 
-
+# Reset variables for game reset
 func ResetCardsToInitial():
 	for i in card_array:
 		i.queue_free()
@@ -76,14 +81,15 @@ func ResetCardsToInitial():
 # Riffle animation
 func ShuffleAnimationStart():
 	
-	FisherYatesShuffle()
+	# Shuffle the cards
+	FisherYatesShuffle() 
 	num_of_cards = 54 if jokers_in_play else 52
 	
 	await get_tree().create_timer(0.7).timeout
+	
 	# Animate the two cards splitting to represent the whole deck being split
 	var fc_inst_left = card_array[0]
 	var fc_inst_right = card_array[1]
-
 
 	var card_split_tween = get_tree().create_tween().set_ease(Tween.EASE_IN)
 	card_split_tween.tween_property(fc_inst_left, "position", Vector2(-split_distance, position.y), card_split_time)
@@ -95,15 +101,16 @@ func ShuffleAnimationStart():
 	card_split_tween.play()
 	fc_inst_right.PlaySoundEffect(0)
 	
+	# Call the riffle animation recursively until all cards are animated
 	card_split_tween.tween_callback(Callable(self, "ShuffleAnimationRecurse").bind(num_of_cards)).set_delay(0.25)
 	
 	Deck.ShuffleAnimationBegin.emit()
 	cards_in_play = 0
 	
-# Card mixing animation
+# Card mixing (riffle) animation
 func ShuffleAnimationRecurse(card_counter):
 	
-	if card_counter <= 0:
+	if card_counter <= 0: # If finished, pull the outer two cards in and call the ending animation
 		await get_tree().create_timer(0.45).timeout
 		var shuffle_tween = get_tree().create_tween().set_ease(Tween.EASE_IN).set_parallel(true)
 	
@@ -118,6 +125,7 @@ func ShuffleAnimationRecurse(card_counter):
 		shuffle_tween.tween_callback(Callable(self,"ShuffleAnimationEnd")).set_delay(0.45)
 		return
 
+	# Otherwise, instantiate cards and animate them being thrown into the middle to depict a riffle shuffle
 	var shuffle_tween = get_tree().create_tween().set_ease(Tween.EASE_IN).set_parallel(true)
 	
 	var fc_card_inst = flipped_card_obj.instantiate()
@@ -126,13 +134,12 @@ func ShuffleAnimationRecurse(card_counter):
 	fc_card_inst.scale = scale
 	card_array.append(fc_card_inst)
 	
-	var card_peek_error: float = 22.0
+	var card_peek_error: float = 22.0 # Needed to avoid peek as left and right cards are scaled
 	
 	if card_counter % 2 == 0: #  Left
 		fc_card_inst.position = Vector2(-(split_distance - card_peek_error), position.y)
 	else:
 		fc_card_inst.position = Vector2((split_distance - card_peek_error), position.y)
-	
 	
 	shuffle_tween.tween_property(fc_card_inst, "position", Vector2(0 + randf_range(-2.0, 2.0), position.y + randf_range(-2.0, 2.0)), card_throw_speed)
 	shuffle_tween.tween_property(fc_card_inst, "rotation_degrees", randf_range(-7.0, 7.0), card_throw_speed)
@@ -140,7 +147,8 @@ func ShuffleAnimationRecurse(card_counter):
 	fc_card_inst.call_deferred("PlaySoundEffect", 1)
 	
 	shuffle_tween.tween_callback(Callable(self, "ShuffleAnimationRecurse").bind(card_counter - 1)).set_delay(card_throw_speed)
-
+	
+# Pull all the cards back together and setup for play
 func ShuffleAnimationEnd():
 	var shuffle_tween = get_tree().create_tween().set_ease(Tween.EASE_IN).set_parallel(true)
 	
@@ -156,7 +164,7 @@ func ShuffleAnimationEnd():
 	Deck.ShuffleAnimationFinish.emit()
 	
 	await get_tree().create_timer(card_split_time * 4).timeout
-	DrawNextCard()
+	DrawNextCard() # Draw the first card
 	
 func DrawNextCard():
 	
@@ -179,28 +187,33 @@ func DrawNextCard():
 	flip_tween.tween_callback(Callable(self, "CardFlipAnimation").bind(card_to_draw))
 	
 	card_to_draw.PlaySoundEffect(0)
-	
-func CardDrawAnimationEnd(card_to_draw):
-	card_to_draw.z_index = -card_to_draw.z_index
 
+# Called in the middle of drawing the card from the deck to the pile
+func CardDrawAnimationEnd(card_to_draw):
+	# Need to flip z_index as we are taking from the bottom of the deck and putting on the top of the pile
+	card_to_draw.z_index = -card_to_draw.z_index 
+
+# Play after drawing the card from the deck to the pile
 func CardFlipAnimation(card_to_draw):
+	# Animate the card flipping from the deck to the pile
 	var flip_tween = get_tree().create_tween().set_ease(Tween.EASE_IN)
 	flip_tween.tween_property(card_to_draw, "scale", Vector2(scale.x, scale.y), card_split_time / 2)
 	flip_tween.play()
 	
 	var card_index = shuffled_card_indices[current_card_index]
-	while !jokers_in_play and ((card_index + 1) % 14) == 0: # If jokers are not in play, and card index is a joker
+	while !jokers_in_play and ((card_index + 1) % 14) == 0: # If jokers are not in play, and card index is a joker, skip
 		current_card_index += 1
 		card_index = shuffled_card_indices[current_card_index]
 	
 	card_to_draw.frame = card_index
-	card_to_draw.card_value = ((card_index + 1) % 14)
+	card_to_draw.card_value = ((card_index + 1) % 14) # Determine card value from index
 	prev_card_value = current_card_value
 	current_card_value = card_to_draw.card_value
-	var suit = card_index / 14
+	var suit = card_index / 14 # 14 cards in each suit
 	var suit_name = ""
 	var card_value_name = ""
 	
+	# Determine card name from suit and card values
 	match suit:
 		0:
 			suit_name = "Hearts"
@@ -232,8 +245,11 @@ func CardFlipAnimation(card_to_draw):
 	
 	current_card_index += 1
 	
+	# Hawk will assume higher if the current card value is less than or equal to 7.
+	# Could potentially improve hawk's esimates by looking at cards already played and getting a statistic
 	hawk_assumes_higher = current_card_value <= 7
 	
+	# Determine if player chose the correct higher or lower
 	if current_card_value == 0: # Joker, auto loss
 		correct_bet = false
 	if current_card_value == prev_card_value: # Same card value, correct

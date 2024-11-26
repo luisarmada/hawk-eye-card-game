@@ -1,9 +1,14 @@
-[gd_scene load_steps=5 format=3 uid="uid://chjuvk84o5h0c"]
+[gd_scene load_steps=10 format=3 uid="uid://chjuvk84o5h0c"]
 
-[ext_resource type="Script" path="res://levels/game_ui.gd" id="3_m60ws"]
+[ext_resource type="Script" path="res://objects/game_ui.gd" id="3_m60ws"]
 [ext_resource type="AudioStream" uid="uid://dvijm8omhislv" path="res://art/Audio/Casino Jazz by Pink Banana [Noir Jazz No Copyright Music].wav" id="4_6upfq"]
 [ext_resource type="FontFile" uid="uid://bnt2dlo1wam78" path="res://art/Quit 13.ttf" id="4_q1hkt"]
 [ext_resource type="AudioStream" uid="uid://dgq52w4kt8ur2" path="res://art/Audio/004_Hover_04.wav" id="4_vtklg"]
+[ext_resource type="AudioStream" uid="uid://xofu27hfliol" path="res://art/Audio/cha-ching-jackpot-win-jam-fx-1-00-04.mp3" id="5_iue4f"]
+[ext_resource type="AudioStream" uid="uid://0n1n1l71u6yb" path="res://art/Audio/video-game-points-lost-retro-glitchedtones-1-00-01.mp3" id="6_2ou28"]
+[ext_resource type="AudioStream" uid="uid://l6y8rjg175q3" path="res://art/Audio/cash-register-alert-epic-stock-media-1-00-00.mp3" id="7_1p31m"]
+[ext_resource type="AudioStream" uid="uid://dodsk2ivyxcdi" path="res://art/Audio/036_Dialogue_01_Single.wav" id="7_f1qju"]
+[ext_resource type="AudioStream" uid="uid://dtr713f31ce2j" path="res://art/Audio/023_Decline_03.wav" id="8_nb845"]
 
 [node name="gameLevel" type="Node2D"]
 
@@ -64,6 +69,23 @@ autowrap_mode = 0
 [node name="UISFX" type="AudioStreamPlayer2D" parent="Control/CanvasLayer"]
 stream = ExtResource("4_vtklg")
 volume_db = 8.0
+
+[node name="JackpotSFX" type="AudioStreamPlayer2D" parent="Control/CanvasLayer"]
+stream = ExtResource("5_iue4f")
+volume_db = 3.0
+
+[node name="LoseSFX" type="AudioStreamPlayer2D" parent="Control/CanvasLayer"]
+stream = ExtResource("6_2ou28")
+volume_db = -3.0
+
+[node name="PlaceBetSFX" type="AudioStreamPlayer2D" parent="Control/CanvasLayer"]
+stream = ExtResource("7_1p31m")
+
+[node name="BlipSFX" type="AudioStreamPlayer2D" parent="Control/CanvasLayer"]
+stream = ExtResource("7_f1qju")
+
+[node name="DeclineSFX" type="AudioStreamPlayer2D" parent="Control/CanvasLayer"]
+stream = ExtResource("8_nb845")
 
 [node name="BGMusic" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("4_6upfq")

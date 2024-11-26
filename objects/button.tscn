@@ -1,12 +1,14 @@
-[gd_scene load_steps=3 format=3 uid="uid://b10vnkbfc8ewa"]
+[gd_scene load_steps=3 format=3 uid="uid://ds3fnfqq7nnca"]
 
-[ext_resource type="Texture2D" uid="uid://boybmmmtcayrp" path="res://art/Full Sprite Sheet.png" id="1_fijn1"]
 [ext_resource type="FontFile" uid="uid://bnt2dlo1wam78" path="res://art/Quit 13.ttf" id="2_06knt"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_2tsv5"]
+load_path = "res://.godot/imported/Full Sprite Sheet.png-bfc0daa4f86e6cbd407d0c36dc125d89.ctex"
 
 [node name="Button" type="Sprite2D"]
 position = Vector2(16, -16)
 scale = Vector2(3, 3)
-texture = ExtResource("1_fijn1")
+texture = SubResource("CompressedTexture2D_2tsv5")
 hframes = 6
 vframes = 4
 frame = 19

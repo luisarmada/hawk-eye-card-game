@@ -1,5 +1,6 @@
 extends Sprite2D
 
+# Card value. ace = 1, jack = 11, etc.
 var card_value: int = 0
 
 func PlaySoundEffect(index):
