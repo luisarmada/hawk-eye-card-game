@@ -2,7 +2,7 @@
 
 Hawk's Card Gambit is a game made using Godot 4.3.
 Godot uses a language called GDScript which is very similar to Python. It's designed specifically for Godot, making it easy to integrate with the engine's features and workflows.
-GDScript features dynamic typing, indent-based structure and is lightweight and optimized.
+GDScript features dynamic typing, indent-based structure, and is lightweight and optimized.
 
 ## How To Run Game
 1. Open this link in browser: https://luera.itch.io/hawks-card-gambit
