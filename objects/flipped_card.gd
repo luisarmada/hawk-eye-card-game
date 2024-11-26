@@ -1,5 +1,6 @@
 extends Sprite2D
 
+var card_value: int = 0
 
 func PlaySoundEffect(index):
 	match index:

@@ -7,14 +7,26 @@ signal ShuffleAnimationBegin()
 signal ShuffleAnimationFinish()
 signal CardDrawn()
 
+var shuffled_card_indices = []
+
 var cards_in_play: int = 0
 var num_of_cards: int = 52
+var jokers_in_play: bool = false
 var split_distance: float = 120.0
 var card_split_time: float = 0.4
 var card_throw_speed: float = 0.09
-var card_array = []
+
+var card_array = [] # contains ALL card instances
  
 var deck_y_offset = -190.0
+
+var current_card_index = 0
+var current_card_name = ""
+var current_card_value = -1
+var prev_card_value = -1
+var bet_higher: bool = false
+var correct_bet: bool = true
+var hawk_assumes_higher: bool = false
 
 func _ready():
 	scale = Vector2(2.2, 2.2)
@@ -33,16 +45,40 @@ func InitialCardSetup():
 	fc_inst_right.position = position
 	fc_inst_right.scale = scale
 	card_array.append(fc_inst_right)
+	
+	for i in 56: # iterate through cards
+		if i == 27 or i == 13: # Skip extra jokers
+			continue
+		shuffled_card_indices.append(i)
+
+func FisherYatesShuffle():
+	for i in range(shuffled_card_indices.size() - 1, 0, -1):
+		var j = randi() % (i + 1)
+		
+		# Swap cards
+		var temp = shuffled_card_indices[i]
+		shuffled_card_indices[i] = shuffled_card_indices[j]
+		shuffled_card_indices[j] = temp
+
 
 func ResetCardsToInitial():
 	for i in card_array:
 		i.queue_free()
 	
 	card_array = []
+	
+	current_card_value = -1
+	prev_card_value = -1
+	current_card_index = 0
+	
 	InitialCardSetup()
 
 # Riffle animation
 func ShuffleAnimationStart():
+	
+	FisherYatesShuffle()
+	num_of_cards = 54 if jokers_in_play else 52
+	
 	await get_tree().create_timer(0.7).timeout
 	# Animate the two cards splitting to represent the whole deck being split
 	var fc_inst_left = card_array[0]
@@ -152,7 +188,60 @@ func CardFlipAnimation(card_to_draw):
 	flip_tween.tween_property(card_to_draw, "scale", Vector2(scale.x, scale.y), card_split_time / 2)
 	flip_tween.play()
 	
-	card_to_draw.frame = randi_range(0, 55)
+	var card_index = shuffled_card_indices[current_card_index]
+	while !jokers_in_play and ((card_index + 1) % 14) == 0: # If jokers are not in play, and card index is a joker
+		current_card_index += 1
+		card_index = shuffled_card_indices[current_card_index]
+	
+	card_to_draw.frame = card_index
+	card_to_draw.card_value = ((card_index + 1) % 14)
+	prev_card_value = current_card_value
+	current_card_value = card_to_draw.card_value
+	var suit = card_index / 14
+	var suit_name = ""
+	var card_value_name = ""
+	
+	match suit:
+		0:
+			suit_name = "Hearts"
+		1:
+			suit_name = "Spades"
+		2:
+			suit_name = "Diamonds"
+		3:
+			suit_name = "Clubs"
+	
+	match current_card_value:
+		1:
+			card_value_name = "Ace"
+		11:
+			card_value_name = "Jack"
+		12:
+			card_value_name = "Queen"
+		13:
+			card_value_name = "King"
+		0:
+			card_value_name = "Joker"
+		_:
+			card_value_name = str(current_card_value)
+	
+	if card_value_name == "Joker":
+		current_card_name = card_value_name
+	else:
+		current_card_name = card_value_name + " of " + suit_name
+	
+	current_card_index += 1
+	
+	hawk_assumes_higher = current_card_value <= 7
+	
+	if current_card_value == 0: # Joker, auto loss
+		correct_bet = false
+	if current_card_value == prev_card_value: # Same card value, correct
+		correct_bet = true
+	elif current_card_value > prev_card_value:
+		correct_bet = bet_higher
+	else:
+		correct_bet = !bet_higher
 	
 	await get_tree().create_timer(card_split_time).timeout
 	

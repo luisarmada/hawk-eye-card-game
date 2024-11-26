@@ -34,8 +34,7 @@ theme_override_colors/default_color = Color(1, 1, 1, 1)
 theme_override_fonts/normal_font = ExtResource("4_q1hkt")
 bbcode_enabled = true
 text = "[color=white]Balance: £1500
-Bet: £0 [color=\"#00FF00\"]
-Winnings: £0
+Bet: £0 [color=\"#228B22\"]
 
 "
 scroll_active = false
