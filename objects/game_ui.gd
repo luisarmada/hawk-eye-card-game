@@ -40,6 +40,9 @@ func _process(_delta):
 			current_bet = 0
 			current_winnings = 0
 			bet_string = ""
+			nums_after_decimal = 0
+			in_decimal = false
+			is_valid_bet = false
 			UpdateBetString()
 	else:
 		if not is_game_start:
@@ -127,7 +130,7 @@ func UpdateBetString():
 
 # Update player balance text to show bet, winnings and balance
 func UpdateBalanceString():
-	$PlayerText.text = "[color=white]Balance: £" + str(round(current_balance*100)/100) + "\nBet: £" + str(round(current_bet*100)/100) + "\n[color=#00FF00]Winnings: £" + str(round(current_winnings*100)/100)
+	$PlayerText.text = "[color=white]Balance: £" + format_to_2dp(current_balance) + "\nBet: £" + format_to_2dp(current_bet) + "\n[color=#00FF00]Winnings: £" + format_to_2dp(current_winnings)
 
 # Reset action text whenever a card is drawn
 func DrawCardUpdate():
@@ -138,8 +141,10 @@ func DrawCardUpdate():
 # Cash out - add winnings to balance and display on UI
 func CashOut():
 	can_choose_horl = false
-	var winnings_text = "You won £" + str(current_winnings + current_bet) + "."
-	current_balance += current_winnings + current_bet
+	
+	var winnings = float(format_to_2dp(current_winnings + current_bet))
+	var winnings_text = "You won £" + format_to_2dp(current_winnings + current_bet)
+	current_balance += float(format_to_2dp(current_winnings + current_bet))
 	current_winnings = 0
 	current_bet = 0
 	UpdateBalanceString()
@@ -183,7 +188,7 @@ func ShuffleAnimationFinish():
 
 # Called every time a card is drawn from the pile via signal
 func CardDrawn():
-	if Deck.cards_in_play == 1 or Deck.correct_bet: # If the player is in betting stages
+	if (Deck.cards_in_play == 1 or Deck.correct_bet) and Deck.current_card_name != "Joker": # If the player is in betting stages
 		
 		# UI text update based on hawk decisions
 		var hawk_favour_text = "Hawk favours: [color=#FF6600]" + ("HIGHER" if Deck.hawk_assumes_higher else "LOWER")
@@ -236,3 +241,12 @@ func SetActionText(playsfx, main_text, subtitle_text = "", actionAtext = "", act
 	$ActionText.text = ("[center]" + main_text + 
 	("" if subtitle_text =="" else "\n[color=white]" + subtitle_text ) +
 	"\n\n[color=white]" + actionAtext + "\n[color=white]" + actionBtext + "\n\n[color=white]" + actionCtext)
+
+func format_to_2dp(value: float) -> String:
+	var rounded_value = round(value * 100) / 100.0
+	var formatted_value = str("%0.2f" % rounded_value)
+	
+	# Check if it's an integer
+	if rounded_value == int(rounded_value):
+		return str(int(rounded_value))
+	return formatted_value

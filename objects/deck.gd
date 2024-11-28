@@ -250,8 +250,10 @@ func CardFlipAnimation(card_to_draw):
 	hawk_assumes_higher = current_card_value <= 7
 	
 	# Determine if player chose the correct higher or lower
+	print(current_card_value)
 	if current_card_value == 0: # Joker, auto loss
 		correct_bet = false
+		print("joker auto lose!")
 	if current_card_value == prev_card_value: # Same card value, correct
 		correct_bet = true
 	elif current_card_value > prev_card_value:

@@ -3,7 +3,6 @@
 [ext_resource type="FontFile" uid="uid://bnt2dlo1wam78" path="res://art/Quit 13.ttf" id="2_06knt"]
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_2tsv5"]
-load_path = "res://.godot/imported/Full Sprite Sheet.png-bfc0daa4f86e6cbd407d0c36dc125d89.ctex"
 
 [node name="Button" type="Sprite2D"]
 position = Vector2(16, -16)
